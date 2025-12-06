@@ -7,11 +7,16 @@ body {
     background-color: black;
 }
 
+body {
+    margin-top: 0.5;
+}
+
 body,
 body * {
     -webkit-touch-callout: none;
     user-select: none;
     -webkit-user-select: none;
+    touch-action: none;
 }
 
 input {
