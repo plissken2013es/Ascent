@@ -10,3 +10,7 @@
 # package managers
 bower_components/
 node_modules/
+# build and tests
+dist/
+test-results/
+playwright-report/

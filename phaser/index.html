@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Ascent</title>
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #000;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+      }
+      #game {
+        position: absolute;
+        inset: 0;
+      }
+
+      /* Virtual gamepad, only shown on touch screens */
+      #touch {
+        display: none;
+      }
+      @media (pointer: coarse) {
+        #touch {
+          display: block;
+        }
+      }
+      #touch div {
+        position: fixed;
+        bottom: 24px;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.5);
+        font: bold 20px sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #dpad {
+        left: 24px;
+        width: 144px;
+        height: 144px;
+        border-radius: 50%;
+      }
+      #button-o,
+      #button-x {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+      }
+      #button-o {
+        right: 104px;
+      }
+      #button-x {
+        right: 24px;
+        bottom: 72px !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game"></div>
+    <div id="touch">
+      <div id="dpad"></div>
+      <div id="button-o">Z</div>
+      <div id="button-x">X</div>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

@@ -29,9 +29,7 @@ function shrinko8(...args) {
   const result = spawnSync(cmd, [...cmdArgs, ...args], { stdio: "inherit" });
   if (result.error) {
     if (result.error.code === "ENOENT") {
-      fail(
-        `'${cmd}' not found. Install it with 'pip install shrinko' or set SHRINKO8.`,
-      );
+      fail(`'${cmd}' not found. Install it with 'pip install shrinko' or set SHRINKO8.`);
     }
     throw result.error;
   }
@@ -44,53 +42,59 @@ function fail(message) {
   throw new Error(message);
 }
 
-function extract() {
-  shrinko8(EXPORT, CART, "-F", "js", "-f", "p8");
-  console.log(
-    `Extracted ${path.relative(ROOT, EXPORT)} -> ${path.relative(ROOT, CART)}`,
-  );
-}
-
-function build() {
+// Compiles a .p8 cartridge (text) to its 32 KB ROM
+function buildRom(cartText) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ascent-"));
-  const romFile = path.join(dir, "ascent.rom");
   try {
-    shrinko8(CART, romFile, "-F", "p8", "-f", "rom");
+    const cartFile = path.join(dir, "cart.p8");
+    const romFile = path.join(dir, "cart.rom");
+    fs.writeFileSync(cartFile, cartText);
+    shrinko8(cartFile, romFile, "-F", "p8", "-f", "rom");
     const rom = fs.readFileSync(romFile);
     if (rom.length !== ROM_SIZE) {
       fail(`Unexpected ROM size ${rom.length} (expected ${ROM_SIZE})`);
     }
-    const lines = [];
-    for (let i = 0; i < rom.length; i += BYTES_PER_LINE) {
-      lines.push(Array.from(rom.subarray(i, i + BYTES_PER_LINE)).join(","));
-    }
-    const source = fs.readFileSync(EXPORT, "utf8");
-    if (!CARTDAT.test(source)) {
-      fail(`_cartdat not found in ${path.relative(ROOT, EXPORT)}`);
-    }
-    fs.writeFileSync(
-      EXPORT,
-      source.replace(
-        CARTDAT,
-        (_, start, data, end) => start + lines.join(",\n") + end,
-      ),
-    );
-    console.log(
-      `Built ${path.relative(ROOT, CART)} -> ${path.relative(ROOT, EXPORT)}`,
-    );
+    return rom;
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
 }
 
-const commands = { extract, build };
-try {
-  const command = commands[process.argv[2]];
-  if (!command) {
-    fail(`Usage: node scripts/cart.js <${Object.keys(commands).join("|")}>`);
+// Replaces the cartridge data of the web export source with a ROM
+function injectCartdat(exportSource, rom) {
+  if (!CARTDAT.test(exportSource)) {
+    fail("_cartdat not found in the web export");
   }
-  command();
-} catch (err) {
-  console.error(`Error: ${err.message}`);
-  process.exitCode = 1;
+  const lines = [];
+  for (let i = 0; i < rom.length; i += BYTES_PER_LINE) {
+    lines.push(Array.from(rom.subarray(i, i + BYTES_PER_LINE)).join(","));
+  }
+  return exportSource.replace(CARTDAT, (_, start, data, end) => start + lines.join(",\n") + end);
+}
+
+function extract() {
+  shrinko8(EXPORT, CART, "-F", "js", "-f", "p8");
+  console.log(`Extracted ${path.relative(ROOT, EXPORT)} -> ${path.relative(ROOT, CART)}`);
+}
+
+function build() {
+  const rom = buildRom(fs.readFileSync(CART, "utf8"));
+  fs.writeFileSync(EXPORT, injectCartdat(fs.readFileSync(EXPORT, "utf8"), rom));
+  console.log(`Built ${path.relative(ROOT, CART)} -> ${path.relative(ROOT, EXPORT)}`);
+}
+
+module.exports = { buildRom, injectCartdat, CART, EXPORT };
+
+if (require.main === module) {
+  const commands = { extract, build };
+  try {
+    const command = commands[process.argv[2]];
+    if (!command) {
+      fail(`Usage: node scripts/cart.js <${Object.keys(commands).join("|")}>`);
+    }
+    command();
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    process.exitCode = 1;
+  }
 }

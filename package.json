@@ -8,8 +8,13 @@
   },
   "scripts": {
     "start": "http-server --cors=*",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "playwright test",
     "cart:extract": "node scripts/cart.js extract",
-    "cart:build": "node scripts/cart.js build"
+    "cart:build": "node scripts/cart.js build",
+    "prettier": "prettier \"phaser/**/*.{js,html}\" \"tests/**/*.js\" \"scripts/*.js\" \"*.{js,mjs}\" --write --log-level error"
   },
   "repository": {
     "type": "git",
@@ -20,6 +25,12 @@
   },
   "homepage": "https://github.com/oklemenz/Ascent#readme",
   "devDependencies": {
-    "http-server": "^14.0.0"
+    "@playwright/test": "~1.56.1",
+    "http-server": "^14.0.0",
+    "prettier": "^3.9.9",
+    "vite": "^8.3.1"
+  },
+  "dependencies": {
+    "phaser": "^4.2.1"
   }
 }
