@@ -33,6 +33,17 @@ Crashed on a desolate but mysterious planet you find yourself eye to eye with an
   - `npm start`
 - Browser: `localhost:8080`
 
+## Source
+
+The PICO-8 cartridge source (Lua code, sprites, map, sound and music) is located at `src/ascent.p8`.
+It is the cartridge embedded in the web export (`_cartdat` in `js/ascent_1.1.js`).
+
+- Install [shrinko8](https://github.com/thisismypassport/shrinko8): `pip install shrinko`
+- Edit `src/ascent.p8` (in PICO-8 or any text editor)
+- Terminal:
+  - `npm run cart:build`: Write `src/ascent.p8` into `js/ascent_1.1.js`
+  - `npm run cart:extract`: Write `js/ascent_1.1.js` back into `src/ascent.p8`
+
 ## Credits
 
 - https://johanpeitz.itch.io/ascent
