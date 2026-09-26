@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 
 // The Phaser 4 version lives in phaser/ and reads the cartridge data from
@@ -11,6 +12,13 @@ export default defineConfig({
   build: {
     outDir: "../dist",
     emptyOutDir: true,
+    // The game and the level editor
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL("./phaser/index.html", import.meta.url)),
+        editor: fileURLToPath(new URL("./phaser/editor.html", import.meta.url))
+      }
+    },
     // Phaser alone is about 1.3 MB minified
     chunkSizeWarningLimit: 1600
   }

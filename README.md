@@ -64,6 +64,20 @@ A port of the game to JavaScript and [Phaser 4](https://phaser.io), in `phaser/`
   - `npm run preview:site`: Serve it at `localhost:8080`
   - `.github/workflows/publish-site.yml` publishes it to the `gh-pages` branch on each push to `phaser4` or `main`
 
+### Level Editor
+
+`editor.html` (`localhost:8080/editor.html` with `npm run dev`, "Level editor" in the menu of the website) edits the
+map of the cartridge: 16x4 rooms of 8x8 tiles, where the entities are tiles too (player start, blobs, mushrooms,
+spirit orbs, upgraders, checkpoints, ...).
+
+- Tools: pencil, eraser, rectangle and picker, undo and redo, with the sprite sheet and the entities as brushes
+- View: rooms, grid, sprite flags (solid, platform, ladder, spikes, scalable) and entity labels, zoom and pan
+- Problems: what would not work in the game (no player start, less than 8 spirit orbs for the good ending, an
+  upgrader in a column that gives no upgrade, ...)
+- Play: plays the map in the game, from the start or from the selected tile
+- The map is kept in the browser. `Save .p8` downloads the cartridge with the new map (everything else unchanged): put
+  it in `src/ascent.p8` for the Phaser version, and `npm run cart:build` for the PICO-8 version
+
 ### Structure
 
 - `phaser/src/game/`: The Lua code of `src/ascent.p8`, ported by hand. One file per tab of the cartridge, with the same
@@ -77,6 +91,8 @@ A port of the game to JavaScript and [Phaser 4](https://phaser.io), in `phaser/`
   - `system.js`: 30 fps loop with `_init`/`_update`/`_draw`, `t()`, `flip()` and `run()`
   - `synth/`: Sound effects and music, synthesized at 22050 Hz in an `AudioWorklet` (port of the synthesizer of
     [zepto8](https://github.com/samhocevar/zepto8))
+- `phaser/src/editor/`: The level editor (`model.js`: the map, undo and redo, problems, `.p8` files; `view.js`: the
+  map view; `ui.js`: the panels)
 - `phaser/src/AscentScene.js`: The Phaser scene: runs the loop, shows the 64x64 screen scaled to the window, reads
   keyboard, gamepad and touch input and plays the sound through Phaser's audio context
 
@@ -86,6 +102,7 @@ A port of the game to JavaScript and [Phaser 4](https://phaser.io), in `phaser/`
   PICO-8
 - Terminal: `npx playwright install chromium` (once), then `npm test` ([Playwright](https://playwright.dev))
   - `tests/smoke.spec.js`: Boots, plays and restarts the game
+  - `tests/editor.spec.js`: Edits, saves and plays a map with the level editor
   - `tests/reference.spec.js`: Plays scripted scenarios (`tests/pico8/scenarios.js`: intro, random play, ladders,
     death and respawn, upgrades, lore, mushrooms, fan, blobs, vines, all checkpoints, both endings) in the PICO-8 web
     export and in the Phaser version, and compares every frame: player position, screen and screen palette, `t()` and

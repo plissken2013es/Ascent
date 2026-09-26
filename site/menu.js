@@ -9,8 +9,9 @@ import { split } from "../phaser/src/pico8/lib.js";
 import { FONT, KERNING } from "../phaser/src/game/main.js";
 
 const CHOICES = [
-  { text: "pICO-8", href: "pico8/", y: 34 },
-  { text: "pHASER 4", href: "phaser4/", y: 44 }
+  { text: "pICO-8", href: "pico8/", y: 31 },
+  { text: "pHASER 4", href: "phaser4/", y: 40 },
+  { text: "lEVEL EDITOR", href: "phaser4/editor.html", y: 49 }
 ];
 
 const canvas = document.getElementById("screen");
@@ -56,15 +57,15 @@ function draw() {
   gfx.camera();
   gfx.spr(187, 12, 6, 5, 1);
 
-  gfx.rectfill(6, 29, 57, 54, 0);
-  gfx.rect(6, 29, 57, 54, 1);
+  gfx.rectfill(4, 26, 59, 58, 0);
+  gfx.rect(4, 26, 59, 58, 1);
   CHOICES.forEach((choice, i) => {
     const x = 32 - width(choice.text) / 2;
     const active = i === selected;
     pr(choice.text, x, choice.y, active ? 7 : 13, active ? 5 : undefined);
     if (active && Math.floor(tick / 8) % 2 === 0) {
-      pr(">", x - 6, choice.y, 7);
-      pr("<", x + width(choice.text) + 1, choice.y, 7);
+      pr(">", x - 5, choice.y, 7);
+      pr("<", x + width(choice.text), choice.y, 7);
     }
   });
 
@@ -96,7 +97,7 @@ window.addEventListener("keydown", (event) => {
 function choiceAt(event) {
   const box = canvas.getBoundingClientRect();
   const y = ((event.clientY - box.top) / box.height) * 64;
-  return CHOICES.findIndex((choice) => y >= choice.y - 3 && y < choice.y + 8);
+  return CHOICES.findIndex((choice) => y >= choice.y - 2 && y < choice.y + 7);
 }
 
 canvas.addEventListener("pointermove", (event) => {
