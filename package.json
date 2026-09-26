@@ -11,6 +11,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "build:site": "node scripts/build-site.mjs",
+    "preview:site": "vite preview --outDir ../dist-site",
     "test": "playwright test",
     "cart:extract": "node scripts/cart.js extract",
     "cart:build": "node scripts/cart.js build",

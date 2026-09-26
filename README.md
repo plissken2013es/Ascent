@@ -58,6 +58,12 @@ A port of the game to JavaScript and [Phaser 4](https://phaser.io), in `phaser/`
   - Gamepad: D-Pad or left stick, `A/Y` (🅾️), `B/X` (❎)
   - Touch screens: virtual gamepad
 
+- Website with both versions (as on GitHub Pages):
+  - `npm run build:site`: Menu in `dist-site/`, the PICO-8 version (from the `main` branch) in `dist-site/pico8/` and
+    the Phaser 4 version in `dist-site/phaser4/`
+  - `npm run preview:site`: Serve it at `localhost:8080`
+  - `.github/workflows/publish-site.yml` publishes it to the `gh-pages` branch on each push to `phaser4` or `main`
+
 ### Structure
 
 - `phaser/src/game/`: The Lua code of `src/ascent.p8`, ported by hand. One file per tab of the cartridge, with the same

@@ -12,5 +12,6 @@ bower_components/
 node_modules/
 # build and tests
 dist/
+dist-site/
 test-results/
 playwright-report/

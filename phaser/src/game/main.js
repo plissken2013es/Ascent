@@ -32,7 +32,7 @@ import { spawn_sand, update_particles } from "./particles.js";
 import { draw_lore, update_outro } from "./story.js";
 
 // The custom font (poked at 0x5600)
-const FONT =
+export const FONT =
   "6,8,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0," +
   "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0," +
   "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,63,63,63,63,63,63,63,0,0,0,63," +
@@ -63,6 +63,11 @@ const FONT =
   "34,127,0,62,119,99,99,62,65,62,0,0,10,4,0,80,32,0,0,17,42,68,0,17,42,68,0,62,107,119,107,62,65," +
   "62,0,127,0,127,0,127,0,127,0,85,85,85,85,85,85,85,0";
 
+// Characters printed closer (or further) by pr(): \x91 ➡️, \x8b ⬅️, \x94 ⬆️,
+// \x83 ⬇️, \x8e 🅾️, \x97 ❎
+export const KERNING =
+  "(=1,)=1,Z=-1,j=1,J=1,.=2,w=-2,W=-2,m=-2,M=-2,S=1,W=-2,'=2,T=1,I=2, =2,i=2,L=2,F=1,\x91=-4,\x8b=-4,\x94=-4,\x83=-4,\x8e=-4,\x97=-4,:=2";
+
 export function reset() {
   resetState();
 }
@@ -80,11 +85,9 @@ export function _init() {
   poke(0x5600, ...split(FONT));
   poke(0x5f58, 0x81);
 
-  // kerning (\x91 ➡️, \x8b ⬅️, \x94 ⬆️, \x83 ⬇️, \x8e 🅾️, \x97 ❎)
+  // kerning
   g.kerning = {};
-  const kdata = split(
-    "(=1,)=1,Z=-1,j=1,J=1,.=2,w=-2,W=-2,m=-2,M=-2,S=1,W=-2,'=2,T=1,I=2, =2,i=2,L=2,F=1,\x91=-4,\x8b=-4,\x94=-4,\x83=-4,\x8e=-4,\x97=-4,:=2"
-  );
+  const kdata = split(KERNING);
   for (const pair of all(kdata)) {
     const kv = split(pair, "=");
     g.kerning[kv[0]] = kv[1];
